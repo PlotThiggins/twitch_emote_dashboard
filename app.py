@@ -1,60 +1,59 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from numpy.random import choice
+import plotly.express as px
+import pandas as pd
 from dash.dependencies import Input, Output
+from numpy.random import choice
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-emote_count = {
-    'LUL': 23,
-    'Kappa': 12
+emote_counts = {
+    'LUL': 1,
+    'Kappa': 1,
+    'monkaS': 1,
+    'PepeHands': 1
 }
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div(children=[
-    html.H1(children='Title goes here mf'),
-    html.Div(id='updatable-graph',children='And then this, my dude, is the subtitle'),
+    html.H1(children='Hello Dash'),
+
+    html.Div(children='Dash: A web application framework for Python.'),
     dcc.Graph(
-        id='emote_count',
+        id='live-update-graph',
         figure={
-            'data': [{'x': [key], 'y': [emote_count[key]], 'type':'bar', 'name':key}
-                     for key in emote_count.keys()],
+            'data': [{'x': [key], 'y': [emote_counts[key]], 'type': 'bar', 'name':key}
+                     for key in emote_counts.keys()],
             'layout': {
-                'title': 'Emote count'
+                'title': 'Dash Data Visualization'
             }
         }
     ),
     dcc.Interval(
-                id='interval-component',
-                interval=1*1000, # in milliseconds
-                n_intervals=0
-            )
-    ]
-)
+        id='interval-component',
+        interval=2 * 1000,  # in milliseconds
+        n_intervals=0
+        )
+])
 
-
-@app.callback(Output('updatable-graph', 'children'),
+@app.callback(Output('live-update-graph', 'figure'),
               [Input('interval-component', 'n_intervals')])
-def update_counts(n):
-    # Jitter the values to simulate continuous data scraping (but with minus values)
-    for key in emote_count.keys():
-        change_value = choice(10)
-        if choice(2):
-            emote_count[key] += change_value
-        else:
-            emote_count[key] -= change_value
+def update_graph_live(n):
 
-    figure = {
-        'data': [{'x': [key], 'y': [emote_count[key]], 'type': 'bar', 'name': key}
-                 for key in emote_count.keys()],
+    # Update emote counts
+    for key in emote_counts.keys():
+        emote_counts[key] += choice(11)
+
+    # Create updated plot
+    fig = {
+        'data': [{'x': [key], 'y': [emote_counts[key]], 'type': 'bar', 'name': key}
+                 for key in emote_counts.keys()],
         'layout': {
-            'title': 'Emote count'
+            'title': 'Dash Data Visualization'
         }
     }
-    return figure
+    return fig
 
 
 if __name__ == '__main__':
-
-    # Run server
     app.run_server(debug=False)
