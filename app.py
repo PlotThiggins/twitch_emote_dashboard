@@ -8,12 +8,8 @@ from numpy.random import choice
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-emote_counts = {
-    'LUL': 1,
-    'Kappa': 1,
-    'monkaS': 1,
-    'PepeHands': 1
-}
+emote_list = open('emote_list.txt').read().split('\n')
+emote_counts = {}
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div(children=[
     html.H1(children='Hello Dash'),
