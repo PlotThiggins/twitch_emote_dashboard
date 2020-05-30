@@ -1,0 +1,1 @@
+An app to display live usage stats for emotes in a Twitch chat
